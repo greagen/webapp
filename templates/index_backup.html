@@ -1,0 +1,63 @@
+<HTML>
+    <HEAD><TITLE>js 按键记录</TITLE>
+    </HEAD>
+    <BODY>
+    <script type="text/javascript">
+    var keystring = "";
+    function $(s){return document.getElementById(s)?document.getElementById(s):s;}
+    function keypress(e)
+    {
+        
+    　 var currKey=0,CapsLock=0,e=e||event;
+    　   currKey=e.keyCode||e.which||e.charCode;
+        //　 CapsLock=currKey>=65&&currKey<=90;
+        var pdate=new Date();
+        var ptime=pdate.getTime();
+     
+    　keyName = String.fromCharCode(currKey)+","+ptime+",";
+    　
+    　 keystring += keyName;
+    }
+    function keydown(e)
+    {
+        var currKey=e.keyCode||e.which||e.charCode;
+        var pdate=new Date();
+        var ptime=pdate.getTime();
+        $("content").innerHTML=keystring;
+    }
+    function keyup(e)
+    {
+        var pdate=new Date();
+        var ptime=pdate.getTime();
+        keystring+=ptime+",";
+        $("content").innerHTML=keystring;
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function start(e)
+    {
+        words=["焦虑","镇定","愚笨","坚强"];
+        for (var i=0;i<words.length;i++){
+            await sleep(2000)
+            document.write(words[i] + "    ");
+            var sdate = new Date();
+            var stime = sdate.getTime();
+            document.write(stime + "    ");
+            document.onkeydown =keydown;
+            var edate=new Date();
+            var etime=edate.getTime();
+            document.write(etime + "<br>");
+        }
+    }
+    document.onkeypress=keypress;
+    document.onkeydown =keydown;
+    document.onkeyup =keyup;
+    </script>
+    <input type="text" />
+    <input type="button" value="clean" onclick="$('content').innerHTML = '';keystring = '';"/>
+    <br/>press any key:<span id="content"></span>
+    </BODY>
+    </HTML>

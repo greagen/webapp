@@ -1,0 +1,92 @@
+<HTML>
+    <HEAD>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Keypress Reaction Time Test</title>
+
+        <!-- Bootstrap -->
+        <!-- Latest compiled and minified CSS -->
+            <link rel="stylesheet" href="./src/bootstrap/dist/css/bootstrap.min.css">
+        <style>
+            body {
+                padding-top: 10px;
+            }
+                .jumbotron h2{
+                    text-align: center;
+                }
+        </style>
+    </HEAD>
+    <BODY>
+    <p id="demo"></p>
+    <script>
+        var keystring = "";
+        var keys = ["1", "2", "3"];
+
+
+        // function runKeyTest (keys) {
+        //     document.write(keys);
+        //     var keysArray = _.isArray(keys) ? keys : keys.split(',');
+        //     var keyTest = keysArray[_.random(keysArray.length - 1)];
+        //     var time = _.random(0, 5);
+        //     $jumbotron.html('Wait...');
+        //     var timeout = setTimeout(function() {
+        //         if (!testRunning) return;
+        //         $jumbotron.html(keyTest);
+        //         var stamp = _.now();
+        //         $body.one('keydown', function(event) {
+        //             event.preventDefault();
+        //             var ms = _.now() - stamp;
+        //             updateReults({
+        //                 'key': keyTest,
+        //                 'pressed': String.fromCharCode(event.keyCode),
+        //                 'time': ms,
+        //                 'correct': (keyTest.charCodeAt(0) === event.keyCode)
+        //             });
+        //             runKeyTest(keysArray);
+        //         });
+
+        //     }, time * 1000);
+        //     return timeout;
+        // }
+
+        function runKeyTest (keys) {
+            // var keysArray = _.isArray(keys) ? keys : keys.split(',');
+            var keysArray = keys;
+            // var keyTest = keysArray[random(keysArray.length - 1)];
+            var keyTest = keysArray[0];
+            var time = 1;
+            document.getElementById("demo").innerHTML = 'Waiting...';
+            var timeout = setTimeout(function() {
+                document.getElementById("demo").innerHTML = keyTest;
+                var stime = new Date().getTime();
+                document.getElementById("demo").innerHTML = 'biu~';
+                document.onkeydown=function(event){
+                    var e = event || window.event || arguments.callee.caller.arguments[0];
+                    var etime = new Date().getTime();
+                    var ms = etime - stime;
+                    document.getElementById("demo").innerHTML = '你的反应时间是：'+ ms+'ms';
+                    var timeout = setTimeout(function() {
+                        runKeyTest (keys)
+                    }, 3 * 1000);
+                };
+
+                // $body.one('keydown', function(event) {
+                //     event.preventDefault();
+                //     var ms = _.now() - stamp;
+                //     updateReults({
+                //         'key': keyTest,
+                //         'pressed': String.fromCharCode(event.keyCode),
+                //         'time': ms,
+                //         'correct': (keyTest.charCodeAt(0) === event.keyCode)
+                //     });
+                //     runKeyTest(keysArray);
+                // });
+            }, time * 1000);
+            return timeout;
+        }
+        //runKeyTest(keys);
+    </script>
+    </BODY>
+    <button id="start" onclick="runKeyTest(keys)">开始计时</button>
+    </HTML>
+

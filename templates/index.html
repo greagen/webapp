@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	  
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="pragma" content="no-cache"/>
+	<meta http-equiv="cache-control" content="no-cache"/>
+	<meta http-equiv="expires" content="0"/>
+    <title>Keypress Reaction Time Test</title>
+
+    <!-- Bootstrap -->
+    <!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <style>
+    	body {
+    		padding-top: 10px;
+    	}
+			.jumbotron h2{
+				text-align: center;
+				color:black;
+			}
+    </style>
+  </head>
+  <body>
+  	<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="jumbotron">
+					  <h2>Press Start</h2>
+					</div>
+					<form action="#" role="form">
+						<div class="form-group">
+							<label for="keys">Keys: yellow k, red j</label>
+						</div>
+						<div class="form-group">
+							<button class="btn btn-primary" id="submit">Start Test</button>
+						</div>
+					</form>
+				</div>
+			</div>
+  	</div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/depot/0.1.6/depot.min.js"></script>
+    <script>
+    	//document ready
+    	$(function() {
+    		var $body = $('body'),
+    				$jumbotron = $('.jumbotron h2'),
+    				$form = $('form'),
+    				$submit = $('#submit'),
+    				testRunning = false,
+    				runningKeyTest = null,
+    				results = {},
+					words = ['焦虑', '镇定', '愚笨', '坚强', '脸红', '通畅', '挫折', '计划', '紧张', '愉快', '木讷', '勤奋', '手抖', '眉开', '就业', '公交', '不安', '轻松', '笨拙', '慷慨', '腿软', '灵活', '被拒', '格式', '担心', '高兴', '退缩', '聪明', '心慌', '眼笑', '留级', '排列', '恐惧', '平静', '拘谨', '开朗', '头晕', '眉飞', '挖苦', '石头', '担忧', '喜悦', '自卑', '细心', '出汗', '红润', '补考', '行动', '机警', '满足', '拖延', '乐观', '恶心', '色舞', '失恋', '时节', '害怕', '自信', '无能', '爽快', '晕眩', '健壮', '挂科', '划分', '惊慌', '放松', '无用', '忍让', '皱眉', '气定', '离家', '符号', '恐怖', '舒适', '内向', '沉稳', '叹气', '神清', '考研', '分析', '忧虑', '自然', '自闭', '风趣', '心悸', '挺拔', '孤立', '周围', '顾虑', '坦然', '后悔', '理智', '尿频', '神闲', '怯场', '工具', '惶恐', '冷静', '无奈', '洒脱', '尿急', '硬朗', '暗恋', '出现', '烦乱', '自在', '无力', '干练', '颤抖', '气爽', '落榜', '气体', '回避', '心静', '被动', '宽容', '口干', '排斥', '经过', '矫健', '心烦', '安全', '孤独', '接纳', '头痛', '手舞', '面试', '木板', '羞怯', '安逸', '狭隘', '自立', '失眠', '舒畅', '抄袭', '陈述', '窘迫', '安心', '自私', '勇敢', '疲乏', '足蹈', '实习', '房间', '畏惧', '幸福', '自责', '心宽', '乏力', '欢呼', '作弊', '元素', '恐慌', '欣喜', '胆小', '担当', '乏力', '扬眉', '失败', '元素', '被动', '足智多谋', '野心勃勃', '爱责怪人', '急躁', '诚实', '淳朴', '脾气好', '粗犷', '爱发牢骚', '深谋远虑', '冒冒失失', '含蓄', '活泼', '强悍', '迷糊', '有恒心', '见多识广', '懒惰', '脆弱', '斤斤计较', '虎头蛇尾', '有气魄', '自卑', '难以琢磨', '消极', '诚恳', '温和', '深藏不露', '有自信', '调皮', '精益求精', '落伍', '粗心', '才学浅陋', '人云亦云', '宽宏大量', '刻苦耐劳', '爱教训人', '粗暴', '善解人意', '认真', '沉默', '守规矩', '成熟', '优雅', '敬业', '热情', '有气派', '孜孜不倦', '学识渊博', '温柔', '孤僻', '小心眼', '爱占小便宜', '有勇气', '有耐心', '暴躁', '矛盾', '有思想', '威猛', '有志气', '机伶', '有条理', '合群', '胸无大志', '稳扎稳打', '害羞', '谈吐合宜', '威严', '软弱', '有毅力', '老实', '潇洒', '优柔寡断', '处事周到', '俗气', '思虑周密', '外向', '自私', '爱捣乱', '精明', '温文儒雅', '有魅力', '严以律己', '好静', '善良', '光明磊落', '老练', '稳重', '大方', '贪心', '勇往直前', '善交际', '谨言慎行', '爽快', '温暖', '易迁怒', '土气', '胆小', '忧郁', '节俭', '随和', '主动', '多愁善感', '迟钝', '表里如一', '乐观', '冲动', '勤劳', '充满斗志', '开朗', '积极', '畏缩', '易沟通', '拘谨', '努力', '自制力强', '死板', '健谈', '内向', '谦虚', '有远见'],
+					colors = ['j', 'h', 'g', 'f', 'h', 'g', 'f', 'j', 'g', 'j', 'j', 'h', 'f', 'g', 'g', 'j', 'g', 'h', 'j', 'f', 'h', 'j', 'f', 'g', 'f', 'j', 'h', 'g', 'j', 'f', 'g', 'h', 'j', 'h', 'g', 'f', 'h', 'g', 'f', 'j', 'f', 'g', 'h', 'j', 'g', 'h', 'j', 'f', 'g', 'f', 'j', 'h', 'f', 'j', 'h', 'g', 'h', 'j', 'f', 'g', 'j', 'f', 'g', 'h', 'j', 'h', 'g', 'f', 'h', 'g', 'f', 'j', 'f', 'g', 'h', 'j', 'g', 'h', 'j', 'f', 'g', 'f', 'j', 'h', 'f', 'j', 'h', 'g', 'h', 'j', 'f', 'g', 'j', 'f', 'g', 'h', 'j', 'f', 'h', 'g', 'f', 'h', 'g', 'j', 'h', 'f', 'j', 'g', 'f', 'j', 'g', 'h', 'h', 'g', 'j', 'f', 'g', 'j', 'f', 'h', 'j', 'g', 'h', 'f', 'g', 'h', 'f', 'j', 'f', 'j', 'h', 'g', 'j', 'j', 'g', 'f', 'h', 'f', 'g', 'j', 'f', 'g', 'j', 'h', 'h', 'g', 'f', 'j', 'g', 'f', 'j', 'h', 'g', 'j', 'h', 'f', 'j', 'h', 'f', 'g', 'f', 'g', 'j', 'h', 'g', 'j', 'h', 'f', 'f', 'g', 'h', 'j', 'j', 'h', 'f', 'g', 'h', 'g', 'f', 'j', 'g', 'f', 'j', 'h', 'j', 'h', 'g', 'f', 'h', 'g', 'f', 'j', 'f', 'g', 'h', 'j', 'g', 'h', 'j', 'f', 'j', 'h', 'g', 'f', 'h', 'g', 'f', 'j', 'h', 'j', 'f', 'g', 'j', 'f', 'g', 'h', 'g', 'f', 'j', 'h', 'f', 'j', 'h', 'g', 'h', 'g', 'f', 'h', 'f', 'h', 'g', 'f', 'h', 'f', 'j', 'g', 'f', 'j', 'g', 'h', 'h', 'g', 'f', 'j', 'g', 'f', 'j', 'j', 'j', 'g', 'h', 'f', 'g', 'h', 'f', 'j', 'h', 'g', 'f', 'j', 'g', 'f', 'j', 'h', 'f', 'j', 'h', 'j', 'j', 'g', 'h', 'f', 'g', 'j', 'h', 'f', 'g', 'f', 'h', 'g', 'g', 'h', 'f'];
+
+					function display(word, i){
+
+					}
+    				function runKeyTest (i) {
+						var time = _.random(1, 3);
+						$jumbotron.css("color", "#000000");
+						$jumbotron.html('...');
+						var timeout = setTimeout(function() {
+							if (!testRunning) return;
+							switch(colors[i])
+							{
+							case 'j':
+							// 绿色;
+							$jumbotron.css("color", "#008000");
+							break;
+							case 'h':
+							// blue;
+							// $jumbotron.color="#0000FF";
+							$jumbotron.css("color", "#0000FF");
+							break;
+							case 'g':
+							// yellow;
+							$jumbotron.css("color", "#FFFF00");
+							break;
+							case 'f':
+							// red
+							// $jumbotron.color="#FF0000"
+							$jumbotron.css("color", "#FF0000");
+							break;
+							}
+							$jumbotron.html(words[i]);
+							var stamp = _.now();
+							$body.one('keydown', function(event) {
+								event.preventDefault();
+								var ms = _.now() - stamp;
+								results[i+''] = words[i] + '--' + ms;
+								if (i+1 < words.length){
+									runKeyTest (i + 1);
+								}
+								else
+								{
+									$jumbotron.html(results['1']);
+									$.ajax({
+										type: 'POST',
+										url:"/",
+										data:JSON.stringify(results), 
+										contentType: 'application/json; charset=UTF-8',
+										success:function(results){
+											alert('done');
+										}
+									});
+									return;
+								}
+							});
+						}, time * 1000 + i);
+						return timeout;
+    				}
+
+    				$form.on('submit', function(event) {
+    					event.preventDefault();
+    					if (testRunning) {
+	    					$submit.removeClass('btn-danger').addClass('btn-primary').html('Start Test');
+	    					testRunning = false;
+	    					clearTimeout(runningKeyTest);
+	    					$body.unbind('keydown');
+							results = {}
+							$jumbotron.css("color", "#000000");
+	    					$jumbotron.html('Press Start');
+    					} else {
+	    					$submit.removeClass('btn-primary').addClass('btn-danger').html('Restart Test');
+		  					testRunning = true;
+		  					runningKeyTest = runKeyTest(0);
+    					}
+    				});
+    	});
+    </script>
+  </body>
+</html>
